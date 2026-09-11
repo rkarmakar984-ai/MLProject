@@ -217,4 +217,8 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+# VS Code
 .vscode/
+
+# CatBoost
+catboost_info/
