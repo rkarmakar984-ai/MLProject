@@ -222,3 +222,6 @@ __marimo__/
 
 # CatBoost
 catboost_info/
+
+# Generated ML Artifacts
+artifacts/
