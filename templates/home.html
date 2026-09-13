@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scorewise | Make a prediction</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --ink: #14251f; --muted: #64736c; --paper: #f7f8f2; --mint: #b9e7c9; --green: #1d6b4f; --yellow: #f1c75b; --line: rgba(20, 37, 31, .14); }
+        * { box-sizing: border-box; }
+        body { margin: 0; color: var(--ink); background: var(--paper); font-family: "DM Sans", sans-serif; }
+        nav { display: flex; align-items: center; justify-content: space-between; max-width: 1060px; margin: 0 auto; padding: 26px 24px; }
+        .brand { display: flex; align-items: center; gap: 11px; font-weight: 700; letter-spacing: -.03em; }
+        .brand-mark { width: 32px; height: 32px; display: grid; place-items: center; background: var(--yellow); border-radius: 50% 50% 50% 8px; font-family: "Space Grotesk", sans-serif; }
+        nav a { color: var(--muted); font-size: 14px; text-decoration: none; }
+        main { max-width: 1060px; margin: 0 auto; padding: 42px 24px 70px; }
+        .header { max-width: 650px; margin-bottom: 34px; }
+        .eyebrow { color: var(--green); font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+        h1 { margin: 13px 0 12px; font-family: "Space Grotesk", sans-serif; font-size: clamp(38px, 5vw, 60px); line-height: 1; letter-spacing: -.06em; }
+        .header p { margin: 0; color: var(--muted); line-height: 1.55; }
+        .layout { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 42px; align-items: start; }
+        form { padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 18px 40px rgba(20, 37, 31, .06); }
+        .fields { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px 18px; }
+        .field label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 700; }
+        select, input { width: 100%; min-height: 47px; padding: 0 13px; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 6px; font: inherit; outline: none; }
+        select:focus, input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(29, 107, 79, .12); }
+        .submit { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line); }
+        .submit p { margin: 0; color: var(--muted); font-size: 12px; }
+        button { padding: 14px 18px; color: #fff; background: var(--ink); border: 0; border-radius: 7px; font: 700 14px "DM Sans", sans-serif; cursor: pointer; transition: background .2s ease, transform .2s ease; }
+        button:hover { background: var(--green); transform: translateY(-2px); }
+        .side { padding-top: 14px; }
+        .side-mark { width: 54px; height: 54px; display: grid; place-items: center; margin-bottom: 22px; color: var(--ink); background: var(--mint); border-radius: 50% 50% 50% 8px; font: 700 25px "Space Grotesk", sans-serif; }
+        .side h2 { margin: 0 0 13px; font: 600 25px "Space Grotesk", sans-serif; letter-spacing: -.04em; }
+        .side p { color: var(--muted); font-size: 14px; line-height: 1.55; }
+        .result { margin-top: 25px; padding: 20px; background: var(--mint); border-radius: 8px; }
+        .result small { font-size: 12px; font-weight: 700; }
+        .result strong { display: block; margin-top: 7px; font: 700 36px "Space Grotesk", sans-serif; letter-spacing: -.06em; }
+        .error { margin: 18px 0 0; padding: 12px; color: #9a3c2b; background: #fff0e9; border-radius: 6px; font-size: 13px; }
+        @media (max-width: 760px) { main { padding-top: 25px; } .layout { display: block; } .side { display: none; } form { padding: 21px; } .fields { grid-template-columns: 1fr; gap: 18px; } .submit { align-items: flex-start; flex-direction: column; } button { width: 100%; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">S</span> Scorewise</a>
+        <a href="{{ url_for('index') }}">Back to overview</a>
+    </nav>
+    <main>
+        <header class="header">
+            <div class="eyebrow">Step 01 / Student profile</div>
+            <h1>Build a clearer picture.</h1>
+            <p>Enter the student's context and recent reading and writing scores. We'll estimate their maths score out of 100.</p>
+        </header>
+        <div class="layout">
+            <form action="{{ url_for('predict_datapoint') }}" method="post">
+                <div class="fields">
+                    <div class="field"><label for="gender">Gender</label><select id="gender" name="gender" required><option selected disabled value="">Select gender</option><option value="male">Male</option><option value="female">Female</option></select></div>
+                    <div class="field"><label for="ethnicity">Race or ethnicity</label><select id="ethnicity" name="ethnicity" required><option selected disabled value="">Select group</option><option value="group A">Group A</option><option value="group B">Group B</option><option value="group C">Group C</option><option value="group D">Group D</option><option value="group E">Group E</option></select></div>
+                    <div class="field"><label for="parental_level_of_education">Parental education</label><select id="parental_level_of_education" name="parental_level_of_education" required><option selected disabled value="">Select level</option><option value="associate's degree">Associate's degree</option><option value="bachelor's degree">Bachelor's degree</option><option value="high school">High school</option><option value="master's degree">Master's degree</option><option value="some college">Some college</option><option value="some high school">Some high school</option></select></div>
+                    <div class="field"><label for="lunch">Lunch type</label><select id="lunch" name="lunch" required><option selected disabled value="">Select lunch type</option><option value="free/reduced">Free / reduced</option><option value="standard">Standard</option></select></div>
+                    <div class="field"><label for="test_preparation_course">Test preparation</label><select id="test_preparation_course" name="test_preparation_course" required><option selected disabled value="">Select status</option><option value="none">None</option><option value="completed">Completed</option></select></div>
+                    <div class="field"><label for="reading_score">Reading score <span>(0-100)</span></label><input id="reading_score" type="number" name="reading_score" min="0" max="100" placeholder="e.g. 72" required></div>
+                    <div class="field"><label for="writing_score">Writing score <span>(0-100)</span></label><input id="writing_score" type="number" name="writing_score" min="0" max="100" placeholder="e.g. 68" required></div>
+                </div>
+                <div class="submit"><p>Your information is used only to generate this estimate.</p><button type="submit">Estimate maths score <span aria-hidden="true">↗</span></button></div>
+                {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+                {% if results %}<div class="result" aria-live="polite"><small>Estimated maths score</small><strong>{{ results }} / 100</strong></div>{% endif %}
+            </form>
+            <aside class="side">
+                <div class="side-mark">S</div>
+                <h2>A useful estimate, not a final verdict.</h2>
+                <p>Use this prediction as a conversation starter. The strongest next step is always understanding what support helps the student learn best.</p>
+            </aside>
+        </div>
+    </main>
+</body>
+</html>
